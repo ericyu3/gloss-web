@@ -37,6 +37,8 @@ If you've read and understood the warning above, here's how to get started.
 The default port is 8000, so you can now visit 'http://localhost:8000' to
 access the server.
 
+You MUST run the server from the project directory.
+
 How to Use:
 -----------
 
@@ -54,3 +56,22 @@ to get deleted sometimes, so you probably want to keep another copy
 elsewhere!  (It's also stored on the server in the tmp directory, but you
 can't get it from there through the web interface yet.)
 
+How to Help:
+------------
+
+This is a bare skeleton of the project.  It needs a lot of work, including:
+
+1. Testing and fixing in more browsers.
+2. Some better way to load images, given that you can't use the IO monad.
+3. Use of SafeHaskell to control execution.
+4. Resource, time, and other limits as a safeguard against DOSing the server.
+5. Support for the animation, simulation, and game interfaces of gloss.
+6. Better organization of the code... I'm holding off for Snap 0.6 before
+   taking that seriously, though.
+
+The latter is a tough job, since what we really want is real-time streaming
+of the pictures, and not polling in new requests.  Comet is notoriously
+difficult.
+
+I plan to tackle all of this stuff in time... but if you want it sooner, I'm
+happy to accept patches.
