@@ -1,0 +1,20 @@
+Name:                gloss-web
+Version:             0.1
+Synopsis:            Web-based editor for gloss
+Description:         Web-based environment to write and display gloss
+                     pictures.  This is a reimplementation of gloss to use
+                     the JavaScript Canvas API.
+License:             BSD3
+License-file:        LICENSE
+Author:              Chris Smith <cdsmith@gmail.com>
+Maintainer:          Chris Smith <cdsmith@gmail.com>
+Category:            Web
+Build-type:          Simple
+Cabal-version:       >=1.2
+
+Executable gloss-web
+  Main-is:           Main.hs
+  Build-depends:     base, gloss, snap-core, snap-server, bytestring, hint,
+                     containers, aeson, vector, text, random, filepath,
+                     heist, xmlhtml, gd, base64-bytestring, cryptohash,
+                     directory

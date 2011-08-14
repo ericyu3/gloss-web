@@ -1,0 +1,64 @@
+<html>
+    <head>
+        <style type="text/css">
+            #editor {
+                position: relative;
+                width: 650px;
+                height: 450px;
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            Implement a single symbol called <code>picture</code> describing
+            your picture.  Remember to import the <code>Graphics.Gloss</code>
+            package.  Have fun!
+            <hr>
+        </div>
+        <form id="form" action="displayInBrowser" method="post" target="display">
+        <div id="editor">
+import Graphics.Gloss
+picture = Circle 80</div>
+        <script type="text/javascript" src="src/ace.js" charset="utf-8"></script>
+        <script type="text/javascript" src="mode-haskell.js" charset="utf-8"></script>
+        <script type="text/javascript">
+            var editor;
+
+            window.onload = function() {
+                editor = ace.edit("editor");
+
+                var all = document.cookie;
+                var list = all.split("; ");
+                for (var i = 0; i < list.length; i++)
+                {
+                    var cookie = list[i];
+                    var p = cookie.indexOf("=");
+                    var name = cookie.substring(0,p);
+                    if (name == "displaySource")
+                    {
+                        var value = decodeURIComponent(cookie.substring(p+1));
+                        editor.getSession().setValue(value);
+                        break;
+                    }
+                }
+
+                var HaskellMode = require('ace/mode/haskell').Mode;
+                editor.getSession().setMode(new HaskellMode());
+            };
+
+            function run()
+            {
+                var s = editor.getSession().getValue();
+                window.open('about:blank', 'display', 'width=620,height=620');
+                document.cookie = "displaySource=" + encodeURIComponent(s)
+                    + "; max-age = " + (1000 * 365 * 24 * 60 * 60);
+                document.getElementById("codefield").value = s
+                document.getElementById("form").submit();
+            }
+        </script>
+
+        <input id="codefield" type="hidden" name="source" value=""/>
+        <input type="button" value="Run" onclick="run()"/>
+        </form>
+    </body>
+</html>
