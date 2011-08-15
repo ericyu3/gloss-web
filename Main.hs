@@ -45,7 +45,6 @@ import qualified Data.Vector as V
 
 deriving instance Typeable Picture
 
-
 main = do
     Right heist <- loadTemplates "web" (emptyTemplateState "web")
     quickHttpServe $

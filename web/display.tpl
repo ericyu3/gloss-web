@@ -1,5 +1,9 @@
 <html>
     <head>
+        <!--[if IE]>
+        <script type="text/javascript" src="excanvas.js"></script>
+        <![endif]-->
+
         <script type="text/javascript">
         function displayInCanvas()
         {
