@@ -13,8 +13,10 @@ Build-type:          Simple
 Cabal-version:       >=1.2
 
 Executable gloss-web
+  Hs-source-dirs:    src
   Main-is:           Main.hs
-  Build-depends:     base, gloss, snap-core, snap-server, bytestring, hint,
+  Build-depends:     base, gloss, snap-core, snap-server, bytestring,
                      containers, aeson, vector, text, random, filepath,
                      heist, xmlhtml, gd, base64-bytestring, cryptohash,
-                     directory
+                     directory, ghc, ghc-paths, mtl
+  Ghc-options:       -trust gloss

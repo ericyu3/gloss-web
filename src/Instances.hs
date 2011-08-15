@@ -1,31 +1,20 @@
 {-# LANGUAGE OverloadedStrings    #-}
 {-# LANGUAGE StandaloneDeriving   #-}
-{-# LANGUAGE DeriveDataTypeable   #-}
 {-# LANGUAGE TypeSynonymInstances #-}
 {-# LANGUAGE FlexibleInstances    #-}
+{-# LANGUAGE DeriveDataTypeable   #-}
 
-module Main where
+module Instances where
 
-import Control.Applicative
 import Control.Monad
 import Crypto.Hash.MD5
 import Data.Aeson
-import Data.IORef
 import Data.Ix
 import Data.Typeable
-import Graphics.Gloss
 import Graphics.GD hiding (Point)
-import Language.Haskell.Interpreter
-import Snap.Http.Server
-import Snap.Types
-import Snap.Util.FileServe
-import System.FilePath
+import Graphics.Gloss
 import System.IO.Unsafe
 import System.Directory
-import System.Random
-import Text.Templating.Heist
-import Text.Templating.Heist.TemplateDirectory
-import Text.XmlHtml
 
 import Data.Text (Text)
 import qualified Data.Text as T
@@ -37,73 +26,8 @@ import qualified Data.ByteString.Lazy as LB
 import qualified Data.ByteString.Char8 as BC
 import qualified Data.ByteString.Base64 as B64
 
-import Data.Map (Map)
-import qualified Data.Map as M
-
-import Data.Vector (Vector)
-import qualified Data.Vector as V
 
 deriving instance Typeable Picture
-
-main = do
-    Right heist <- loadTemplates "web" (emptyTemplateState "web")
-    quickHttpServe $
-        route [ ("displayInBrowser", displayInBrowser heist) ]
-        <|> serveDirectory "web"
-
-
-displayInBrowser heist = do
-    src <- maybe mzero return =<< getParam "source"
-    res <- liftIO $ do
-        fn <- chooseFile ".hs"
-        B.writeFile fn src
-        runInterpreter $ do
-            loadModules [ fn ]
-            themod <- head <$> getLoadedModules
-            setTopLevelModules [ themod ]
-            setImports ["Graphics.Gloss", "Graphics.Gloss.Data.Picture"]
-            interpret "picture" (undefined :: Picture)
-    case res of
-        Left errs  -> displayErrors heist errs
-        Right pic -> displaySuccess heist pic
-
-
-displaySuccess heist pic = do
-    Just (b, t) <- renderTemplate
-        (bindSplice "displayScript" (scrSplice pic) heist)
-        "display"
-    modifyResponse (setContentType t)
-    writeBuilder b
-  where
-    scrSplice pic = return [ Element "script" [("type", "text/javascript")] [
-        TextNode "picture = ",
-        TextNode $ T.decodeUtf8 $ B.concat $ LB.toChunks $ encode pic,
-        TextNode ";"
-        ]]
-
-
-displayErrors heist errs = do
-    let errStrs = case errs of
-            WontCompile es -> map errMsg es
-            GhcException e -> [ e ]
-            NotAllowed   e -> [ e ]
-            UnknownError e -> [ e ]
-    Just (b, t) <- renderTemplate
-        (bindSplice "showErrors" (errSplice errStrs) heist)
-        "displayErrors"
-    modifyResponse (setContentType t)
-    writeBuilder b
-  where
-    errSplice errs = return [Element "ul" []
-        (map (\s -> Element "li" [] [TextNode (T.pack s)]) errs)]
-
-
-chooseFile :: String -> IO String
-chooseFile sfx = do
-    let chars = ['0'..'9'] ++ ['a'..'z']
-        len   = length chars
-    base <- replicateM 16 $ fmap (chars !!) $ randomRIO (0, len - 1)
-    return ("tmp" </> (base ++ sfx))
 
 
 bmpToPng :: Int -> Int -> ByteString -> IO ByteString
