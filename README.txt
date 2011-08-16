@@ -3,36 +3,51 @@ gloss-web -- Web-based front-end to Ben Lippmeier's gloss package
 With gloss-web, you can host an online development environment capable of
 building applications in the gloss graphics library with Haskell!
 
-WARNING! WARNING! WARNING!
---------------------------
+--------
 
-This is a very early release of the project, and it's currently incredibly
-dangerous to run in any kind of public setting.  By design, this application
-allows execution of arbitrary code on your computer with no security at all!
+WARNING: This application runs user-uploaded code on your server.  It uses the
+SafeHaskell extension and only evaluates pure values, so it ought to be safe.
+However, SafeHaskell was released 6 days ago, so it's up to you to decide
+whether you trust it or not.
 
-* Do NOT run the server on a computer with sensitive information on it like
-  private SSH keys or personal data.
+In addition, there's currently no protection against:
 
-* Do NOT run the server on a public network.
+* Eating up 100% of your CPU time.
+* Using bandwidth to transfer infinite-sized results.
+* Crashing the server by using unbounded amounts of memory.
 
-* Be 100% CERTAIN of your firewall configuration before running.
+Because of this, it's probably not appropriate for running on a shared server
+with other important applications.
 
-* Do NOT tell any Haskellers with a malfunctioning sense of humor that you're
-  running the server, or where.
+---------------
+How To Install:
+---------------
 
-In the future, the idea is to use GHC 7.2's SafeHaskell extension to check that
-the code doesn't get to run I/O actions, and to add resource limits and other
-safety mechanisms... but THAT IS NOT DONE YET!
+Sadly, installation has gotten a touch more difficult.  You'll first need a
+modified version of the gloss library.
 
-How To Run:
------------
+1. darcs get http://code.ouroborus.net/gloss/gloss-head/
+2. Change directories into the gloss-head directory
+3. Edit library/gloss.cabal and add the following lines right after the
+   existing ghc-options line:
 
-If you've read and understood the warning above, here's how to get started.
+    If impl(ghc >= 7.2)
+      ghc-options: -XTrustworthy
 
-1. Make sure you've got the Haskell Platform installed (any recent version).
-2. Check out this project into a directory.
-3. Change to that directory and type 'cabal install'.
-4. When the build finishes, type "gloss-web" to run the server.
+4. Type 'cabal install' and wait for the install to complete.
+5. Type 'ghc-pkg trust base' to mark base as a trusted package.
+6. Type 'ghc-pkg trust gloss' to mark gloss as a trusted package.
+
+At this point, you'll have a "trustworthy" version of gloss installed, and have
+marked base as "trusted".  Note that this has security implications in case a
+security vulnerability should be discovered in gloss or base, so technically
+speaking you ought to vet the gloss source code to convince yourself it's okay.
+We'll wait for you to do that... okay, welcome back.  Time to install the
+server.
+
+1. Check out this project into a directory.
+2. Change to that directory and type 'cabal install'.
+3. When the build finishes, type "gloss-web" to run the server.
 
 The default port is 8000, so you can now visit 'http://localhost:8000' to
 access the server.
@@ -63,13 +78,13 @@ This is a bare skeleton of the project.  It needs a lot of work, including:
 
 1. Testing and fixing in more browsers.
 2. Some better way to load images, given that you can't use the IO monad.
-3. Use of SafeHaskell to control execution.
+3. Think about and work out the best way to apply SafeHaskell.
 4. Resource, time, and other limits as a safeguard against DOSing the server.
-5. Support for the animation, simulation, and game interfaces of gloss.
-6. Better organization of the code... I'm holding off for Snap 0.6 before
+5. Better organization of the code... I'm holding off for Snap 0.6 before
    taking that seriously, though.
+6. Support for the animation, simulation, and game interfaces of gloss.
 
-The latter is a tough job, since what we really want is real-time streaming
+The last is a tough job, since what we really want is real-time streaming
 of the pictures, and not polling in new requests.  Comet is notoriously
 difficult.
 
