@@ -50,6 +50,7 @@
 
                 var HaskellMode = require('ace/mode/haskell').Mode;
                 editor.getSession().setMode(new HaskellMode());
+                editor.focus();
             };
 
             function run()
@@ -60,6 +61,7 @@
                     + "; max-age = " + (1000 * 365 * 24 * 60 * 60);
                 document.getElementById("codefield").value = s
                 document.getElementById("form").submit();
+                editor.focus();
             }
         </script>
 
