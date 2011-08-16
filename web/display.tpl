@@ -15,10 +15,10 @@
             ctx.textBaseline = "alphabetic";
             ctx.lineWidth = 0;
             ctx.font = "100px Times Roman";
-            display(ctx, picture);
+            display(ctx, picture, 1, 0, 0, 1, 0, 0);
         }
 
-        function display(ctx, pic)
+        function display(ctx, pic, a, b, c, d, e, f)
         {
             if (pic == null)
             {
@@ -29,19 +29,24 @@
                 var i;
                 for (i = 0; i < pic.length; i++)
                 {
-                    display(ctx, pic[i]);
+                    display(ctx, pic[i], a, b, c, d, e, f);
                 }
             }
             else if (pic.t == "c")
             {
+                ctx.save();
+                ctx.transform(a, b, c, d, e, f);
                 ctx.beginPath();
                 ctx.arc(0, 0, pic.r, 0, 2 * Math.PI);
+                ctx.restore();
                 ctx.stroke();
             }
             else if (pic.t == "p")
             {
                 if (pic.p.length > 0)
                 {
+                    ctx.save();
+                    ctx.transform(a, b, c, d, e, f);
                     ctx.beginPath();
                     ctx.moveTo(pic.p[0].x, pic.p[0].y);
                     var i;
@@ -49,6 +54,7 @@
                     {
                         ctx.lineTo(pic.p[i].x, pic.p[i].y);
                     }
+                    ctx.restore();
                     ctx.fill();
                 }
             }
@@ -56,6 +62,8 @@
             {
                 if (pic.p.length > 0)
                 {
+                    ctx.save();
+                    ctx.transform(a, b, c, d, e, f);
                     ctx.beginPath();
                     ctx.moveTo(pic.p[0].x, pic.p[0].y);
                     var i;
@@ -63,21 +71,26 @@
                     {
                         ctx.lineTo(pic.p[i].x, pic.p[i].y);
                     }
+                    ctx.restore();
                     ctx.stroke();
                 }
             }
             else if (pic.t == 'h')
             {
                 ctx.save();
-                ctx.lineWidth = pic.w;
+                ctx.save();
+                ctx.transform(a, b, c, d, e, f);
                 ctx.beginPath();
                 ctx.arc(0, 0, pic.r, 0, 2 * Math.PI);
+                ctx.restore();
+                ctx.lineWidth = pic.w;
                 ctx.stroke();
                 ctx.restore();
             }
             else if (pic.t == 't')
             {
                 ctx.save();
+                ctx.transform(a, b, c, d, e, f);
                 ctx.scale(1,-1);
                 ctx.fillText(pic.c, 0, 0);
                 ctx.restore();
@@ -89,37 +102,42 @@
                 ctx.save();
                 ctx.strokeStyle = str;
                 ctx.fillStyle = str;
-                display(ctx, pic.p);
+                display(ctx, pic.p, a, b, c, d, e, f);
                 ctx.restore();
             }
             else if (pic.t == 'x')
             {
-                ctx.save();
-                ctx.translate(pic.x, pic.y);
-                display(ctx, pic.p);
-                ctx.restore();
+                display(ctx, pic.p,
+                    a, b, c, d,
+                    a * pic.x + c * pic.y + e,
+                    b * pic.x + d * pic.y + f);
             }
             else if (pic.t == 'r')
             {
-                ctx.save();
-                ctx.rotate(Math.PI * pic.r / 180);
-                display(ctx, pic.p);
-                ctx.restore();
+                var th = Math.PI * pic.r / 180;
+                display(ctx, pic.p,
+                     a * Math.cos(th) + c * Math.sin(th),
+                     b * Math.cos(th) + d * Math.sin(th),
+                    -a * Math.sin(th) + c * Math.cos(th),
+                    -b * Math.sin(th) + d * Math.cos(th),
+                    e, f);
             }
             else if (pic.t == 's')
             {
-                ctx.save();
-                ctx.scale(pic.x, pic.y);
-                display(ctx, pic.p);
-                ctx.restore();
+                display(ctx, pic.p,
+                    pic.x * a, pic.x * b,
+                    pic.y * c, pic.y * d,
+                    e, f);
             }
             else if (pic.t == 'b')
             {
+                ctx.save();
+                ctx.transform(a, b, c, d, e, f);
                 var img = new Image(pic.c);
-                alert(img.complete + " " + img.naturalWidth + " " + img.naturalHeight); 
                 ctx.drawImage(img,
                     -img.naturalWidth / 2, -pic.naturalHeight / 2,
                     pic.naturalWidth, pic.naturalHeight);
+                ctx.restore();
             }
         }
         </script>
