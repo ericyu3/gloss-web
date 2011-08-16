@@ -18,5 +18,5 @@ Executable gloss-web
   Build-depends:     base, gloss, snap-core, snap-server, bytestring,
                      containers, aeson, vector, text, random, filepath,
                      heist, xmlhtml, gd, base64-bytestring, cryptohash,
-                     directory, ghc, ghc-paths, mtl
+                     directory, ghc >= 7.2, ghc-paths, mtl
 
