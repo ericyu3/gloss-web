@@ -125,7 +125,8 @@ displayErrors heist errs = do
     writeBuilder b
   where
     errSplice errs = return [Element "ul" []
-        (map (\s -> Element "li" [] [TextNode (T.pack s)]) errs)]
+        (map (\s -> Element "li" [] [
+                Element "pre" [] [TextNode (T.pack s) ]]) errs)]
 
 
 chooseFileName :: String -> IO String
