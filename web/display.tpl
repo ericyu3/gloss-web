@@ -20,7 +20,11 @@
 
         function display(ctx, pic)
         {
-            if (pic instanceof Array)
+            if (pic == null)
+            {
+                // do nothing
+            }
+            else if (pic instanceof Array)
             {
                 var i;
                 for (i = 0; i < pic.length; i++)

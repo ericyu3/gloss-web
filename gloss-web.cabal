@@ -19,4 +19,4 @@ Executable gloss-web
                      containers, aeson, vector, text, random, filepath,
                      heist, xmlhtml, gd, base64-bytestring, cryptohash,
                      directory, ghc, ghc-paths, mtl
-  Ghc-options:       -trust gloss
+

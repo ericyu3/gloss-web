@@ -16,9 +16,7 @@
             <hr>
         </div>
         <form id="form" action="displayInBrowser" method="post" target="display">
-        <div id="editor">
-import Graphics.Gloss
-picture = Circle 80</div>
+        <div id="editor">Loading...</div>
         <script type="text/javascript" src="ace/ace.js" charset="utf-8"></script>
         <script type="text/javascript" src="mode-haskell.js" charset="utf-8"></script>
         <script type="text/javascript">
@@ -29,6 +27,7 @@ picture = Circle 80</div>
 
                 var all = document.cookie;
                 var list = all.split("; ");
+                var found = false;
                 for (var i = 0; i < list.length; i++)
                 {
                     var cookie = list[i];
@@ -38,8 +37,15 @@ picture = Circle 80</div>
                     {
                         var value = decodeURIComponent(cookie.substring(p+1));
                         editor.getSession().setValue(value);
+                        found = true;
                         break;
                     }
+                }
+
+                if (!found)
+                {
+                    var value = "import Graphics.Gloss\n\npicture = Circle 80";
+                    editor.getSession().setValue(value);
                 }
 
                 var HaskellMode = require('ace/mode/haskell').Mode;
